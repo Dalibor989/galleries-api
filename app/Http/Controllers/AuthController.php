@@ -49,20 +49,6 @@ class AuthController extends Controller
         return response()->noContent();
     }
 
-    public function refreshToken()
-    {
-        try {
-            $token = Auth::refresh();
-            return [
-                'token' => $token
-            ];
-        } catch (TokenBlacklistedException $exception) {
-            return response()->json([
-                'message' => 'Invalid token'
-            ], 401);
-        }
-    }
-
     public function getMyProfile()
     {
         $user = Auth::user();
