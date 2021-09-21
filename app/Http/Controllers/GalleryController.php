@@ -14,8 +14,8 @@ class GalleryController extends Controller
      */
     public function index()
     {
-        $galleries = Gallery::all();
-
+        $galleries = Gallery::with('images')->get();
+        info($galleries);
         return response()->json($galleries);
     }
 
@@ -48,7 +48,8 @@ class GalleryController extends Controller
      */
     public function show(Gallery $gallery)
     {
-        //
+        $gallery->load('images');
+        return response()->json($gallery);
     }
 
     /**
