@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
+use App\Models\Image;
 use Illuminate\Http\Request;
+use App\Http\Requests\CreateGalleryRequest;
 
 class GalleryController extends Controller
 {
@@ -36,9 +38,17 @@ class GalleryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateGalleryRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $image = $data['imageUrl'];
+
+        $gallery = Gallery::create(['user_id' => $data['user_id'], 'title' => $data['title'], 'description' => $data['description']]);
+
+        $image = Image::create(['gallery_id' => $gallery->id, 'imageUrl' => $image]);
+
+        return response()->json($gallery);
     }
 
     /**

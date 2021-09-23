@@ -31,4 +31,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::get('/auth/me', [AuthController::class, 'getMyProfile'])->middleware('auth');
 
-Route::post('/comments', [CommentController::class, 'store']);
+Route::post('/galleries/{gallery}/comments', [CommentController::class, 'store']);
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+
+Route::post('/galleries', [GalleryController::class, 'store']);

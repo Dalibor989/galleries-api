@@ -9,6 +9,11 @@ class Image extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'imageUrl',
+        'gallery_id',
+    ];
+
     public function gallery() {
         return $this->belongsTo(Gallery::class);
     }
