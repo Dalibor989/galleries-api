@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateCommentRequest;
+use App\Models\Comment;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class GalleryController extends Controller
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $title = $request->query('title');
-        $galleries = Gallery::search_by_title($title)->with('images', 'user', 'comments')->paginate(10);
-        
-        return response()->json($galleries);
+        //
     }
 
     /**
@@ -36,30 +36,37 @@ class GalleryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Gallery $gallery, CreateCommentRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $comment = new Comment;
+        $comment->content = $data['content'];
+        $comment->user()->associate(Auth::user());
+        $comment->gallery()->associate($gallery);
+        $comment->save();
+
+        return response()->json($comment, 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Gallery  $gallery
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function show(Gallery $gallery)
+    public function show(Comment $comment)
     {
-        $gallery->load('images', 'user', 'comments');
-        return response()->json($gallery);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Gallery  $gallery
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function edit(Gallery $gallery)
+    public function edit(Comment $comment)
     {
         //
     }
@@ -68,10 +75,10 @@ class GalleryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Gallery  $gallery
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Gallery $gallery)
+    public function update(Request $request, Comment $comment)
     {
         //
     }
@@ -79,17 +86,11 @@ class GalleryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Gallery  $gallery
+     * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Gallery $gallery)
+    public function destroy(Comment $comment)
     {
         //
-    }
-
-    public function getMyGalleries($user_id) {
-        $galleries = Gallery::with('images')->where('user_id', $user_id)->get();
-
-        return response()->json($galleries);
     }
 }

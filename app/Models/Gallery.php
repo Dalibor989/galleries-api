@@ -16,4 +16,21 @@ class Gallery extends Model
     public function images() {
         return $this->hasMany(Image::class);
     }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+    public static function search_by_title($title = null)
+    {
+        $query = self::query();
+
+        if ($title) {
+            $title = strtolower($title);
+            
+            $query->whereRaw('lower(title) like "%' . $title . '%"');
+        }
+
+        return $query;
+    }
 }
