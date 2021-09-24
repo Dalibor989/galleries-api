@@ -24,7 +24,7 @@ class CreateImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'imageUrl' => 'required|string', 
+            'imageUrl' => ["required", "string", "regex:/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/"], 
         ];
     }
 }
