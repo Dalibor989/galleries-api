@@ -44,6 +44,7 @@ class GalleryController extends Controller
     public function store(CreateGalleryRequest $request)
     {
         $data = $request->validated();
+        info($data);
         
         $gallery = new Gallery;
         $gallery->title = $data['title'];
@@ -51,11 +52,18 @@ class GalleryController extends Controller
         $gallery->user()->associate(Auth::user());
         $gallery->save();
 
-        $image = new Image;
-        $image->imageUrl = $data['imageUrl'];
-        $image->gallery()->associate($gallery);
-        $image->save();
-
+        $images = $data['images'];
+        foreach ($images as $image) {
+            info($image);
+            // $image = new Image;
+            Image::create([
+                'imageUrl' => $image,
+                'gallery_id' => $gallery->id
+            ]);
+            // $image->imageUrl = $image;
+            // $image->gallery()->associate($gallery);
+            // $image->save();
+        }
         return response()->json($gallery);
     }
 
@@ -89,9 +97,15 @@ class GalleryController extends Controller
      * @param  \App\Models\Gallery  $gallery
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateGalleryRequest $request, Gallery $gallery)
+    public function update(UpdateGalleryRequest $request, Gallery $gallery, Image $image)
     {
-        $gallery->update();
+        $data = $request->validated();
+
+        $image = $data['imageUrl'];
+        info($image);
+        $gallery->update(['title' => $data['title'], 'description' => $data['description']]);
+
+        $image = Image::where('gallery_id', $gallery->id)->update(['imageUrl' => $image]);
 
         return response()->json($gallery);
     }
