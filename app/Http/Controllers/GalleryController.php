@@ -44,7 +44,6 @@ class GalleryController extends Controller
     public function store(CreateGalleryRequest $request)
     {
         $data = $request->validated();
-        info($data);
         
         $gallery = new Gallery;
         $gallery->title = $data['title'];
@@ -54,7 +53,6 @@ class GalleryController extends Controller
 
         $images = $data['images'];
         foreach ($images as $image) {
-            info($image);
             // $image = new Image;
             Image::create([
                 'imageUrl' => $image,
@@ -102,7 +100,7 @@ class GalleryController extends Controller
         $data = $request->validated();
 
         $image = $data['imageUrl'];
-        info($image);
+        
         $gallery->update(['title' => $data['title'], 'description' => $data['description']]);
 
         $image = Image::where('gallery_id', $gallery->id)->update(['imageUrl' => $image]);
