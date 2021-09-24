@@ -6,6 +6,8 @@ use App\Models\Gallery;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateGalleryRequest;
+use App\Http\Requests\UpdateGalleryRequest;
+use App\Models\User;
 
 class GalleryController extends Controller
 {
@@ -16,8 +18,8 @@ class GalleryController extends Controller
      */
     public function index(Request $request)
     {
-        $title = $request->query('title');
-        $galleries = Gallery::search_by_title($title)->with('images', 'user', 'comments')->paginate(10);
+        $term = $request->query('term');
+        $galleries = Gallery::search_by_title($term)->with('images', 'user', 'comments')->paginate(10);
         
         return response()->json($galleries);
     }
@@ -59,7 +61,7 @@ class GalleryController extends Controller
      */
     public function show(Gallery $gallery)
     {
-        $gallery->load('images', 'user', 'comments');
+        $gallery->load('images', 'user', 'comments.user');
         return response()->json($gallery);
     }
 
@@ -81,9 +83,11 @@ class GalleryController extends Controller
      * @param  \App\Models\Gallery  $gallery
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Gallery $gallery)
+    public function update(UpdateGalleryRequest $request, Gallery $gallery)
     {
-        //
+        $gallery->update();
+
+        return response()->json($gallery);
     }
 
     /**
@@ -94,7 +98,9 @@ class GalleryController extends Controller
      */
     public function destroy(Gallery $gallery)
     {
-        //
+        $gallery->delete();
+        
+        return response()->noContent();
     }
 
     public function getMyGalleries($user_id) {

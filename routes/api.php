@@ -35,3 +35,5 @@ Route::post('/galleries/{gallery}/comments', [CommentController::class, 'store']
 Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 
 Route::post('/galleries', [GalleryController::class, 'store']);
+Route::put('/galleries/{gallery}', [GalleryController::class, 'update']);
+Route::delete('/galleries/{gallery}', [GalleryController::class, 'destroy']);

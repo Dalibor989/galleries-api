@@ -28,16 +28,17 @@ class Gallery extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public static function search_by_title($title = null)
+    public static function search_by_title($term = null)
     {
         $query = self::query();
 
-        if ($title) {
-            $title = strtolower($title);
-            
-            $query->whereRaw('lower(title) like "%' . $title . '%"');
+        if($term) { 
+            $query->whereHas('user', function($query) use ($term) 
+            { $query->where('title', 'like', '%'.$term.'%') 
+                ->orWhere('description', 'like', '%'.$term.'%')
+                ->orWhere('firstName', 'like', '%'.$term.'%')
+                ->orWhere('lastName', 'like', '%'.$term.'%'); });
         }
-
         return $query;
     }
 }
