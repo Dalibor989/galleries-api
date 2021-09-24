@@ -27,7 +27,6 @@ class CreateGalleryRequest extends FormRequest
             'title' => 'required|string|min:2|max:255',
             'description' => 'required|string|max:1000',
             'imageUrl' => 'required|string',
-            'user_id' => 'required',
         ];
     }
 }

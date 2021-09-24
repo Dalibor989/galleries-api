@@ -13,7 +13,6 @@ class Gallery extends Model
         'title',
         'description',
         'imageUrl',
-        'user_id'
     ];
 
     public function user() {

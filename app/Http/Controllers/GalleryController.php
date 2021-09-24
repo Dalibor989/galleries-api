@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CreateGalleryRequest;
 use App\Http\Requests\UpdateGalleryRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class GalleryController extends Controller
 {
@@ -43,12 +44,17 @@ class GalleryController extends Controller
     public function store(CreateGalleryRequest $request)
     {
         $data = $request->validated();
+        
+        $gallery = new Gallery;
+        $gallery->title = $data['title'];
+        $gallery->description = $data['description'];
+        $gallery->user()->associate(Auth::user());
+        $gallery->save();
 
-        $image = $data['imageUrl'];
-
-        $gallery = Gallery::create(['user_id' => $data['user_id'], 'title' => $data['title'], 'description' => $data['description']]);
-
-        $image = Image::create(['gallery_id' => $gallery->id, 'imageUrl' => $image]);
+        $image = new Image;
+        $image->imageUrl = $data['imageUrl'];
+        $image->gallery()->associate($gallery);
+        $image->save();
 
         return response()->json($gallery);
     }
